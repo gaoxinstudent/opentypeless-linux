@@ -194,6 +194,28 @@ def _open_tkinter_dialog(app):
     ttk.Checkbutton(pol_frame, text="自动格式化为列表/步骤",
                     variable=struct_var).grid(row=2, column=0, columnspan=2, sticky="w", padx=4, pady=2)
 
+    long_struct_var = tk.BooleanVar(value=config.get("auto_structure_long", True))
+    ttk.Checkbutton(pol_frame, text="长语音自动提炼要点并编号（一、二、三…）",
+                    variable=long_struct_var).grid(row=3, column=0, columnspan=2, sticky="w", padx=4, pady=2)
+
+    # ── 自定义屏蔽词 ──
+    filler_frame = ttk.LabelFrame(main, text="自定义屏蔽词（追加到内置列表）", padding=10)
+    filler_frame.pack(fill="x", padx=0, pady=4)
+
+    ttk.Label(filler_frame, text="中文:").grid(row=0, column=0, sticky="e", padx=4, pady=3)
+    zh_filler_entry = ttk.Entry(filler_frame, width=42)
+    zh_filler_entry.insert(0, "、".join(config.get("custom_fillers_zh", [])))
+    zh_filler_entry.grid(row=0, column=1, sticky="ew", padx=4, pady=3)
+    ttk.Label(filler_frame, text="用顿号分隔，如：就是说、然后呢、好不好",
+              foreground="#888").grid(row=0, column=2, sticky="w", padx=4)
+
+    ttk.Label(filler_frame, text="English:").grid(row=1, column=0, sticky="e", padx=4, pady=3)
+    en_filler_entry = ttk.Entry(filler_frame, width=42)
+    en_filler_entry.insert(0, ", ".join(config.get("custom_fillers_en", [])))
+    en_filler_entry.grid(row=1, column=1, sticky="ew", padx=4, pady=3)
+    ttk.Label(filler_frame, text="用逗号分隔，如：I mean, sort of",
+              foreground="#888").grid(row=1, column=2, sticky="w", padx=4)
+
     # ── 按钮 ──
     btn_frame = ttk.Frame(main)
     btn_frame.pack(fill="x", pady=(12, 0))
@@ -207,6 +229,14 @@ def _open_tkinter_dialog(app):
         config["polish_mode"] = next((v for l, v in POLISH_MODES if l == pl), "general")
         config["remove_fillers"] = rm_var.get()
         config["auto_structure"] = struct_var.get()
+        config["auto_structure_long"] = long_struct_var.get()
+
+        # 解析自定义屏蔽词
+        zh_raw = zh_filler_entry.get().strip()
+        config["custom_fillers_zh"] = [w.strip() for w in zh_raw.split("、") if w.strip()] if zh_raw else []
+        en_raw = en_filler_entry.get().strip()
+        config["custom_fillers_en"] = [w.strip() for w in en_raw.split(",") if w.strip()] if en_raw else []
+
         save_config(config)
         if app:
             app.config = config

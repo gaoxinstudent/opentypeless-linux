@@ -18,8 +18,12 @@ DEFAULT_CONFIG = {
     "polish_mode": "general",
     "remove_fillers": True,
     "auto_structure": True,
+    "auto_structure_long": True,  # 长语音自动提炼要点并编号
     "audio_device": None,
-    "memory_size": 5,  # 记忆最近 N 条润色，用于 few-shot 示例
+    "memory_size": 5,
+    # 自定义屏蔽词（会追加到内置列表）
+    "custom_fillers_zh": [],  # 中文自定义填充词，如 ["就是说", "然后呢"]
+    "custom_fillers_en": [],  # 英文自定义填充词，如 ["I mean", "sort of"]
 }
 
 
