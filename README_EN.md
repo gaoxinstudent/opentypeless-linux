@@ -5,8 +5,9 @@
 ## Features
 
 - 🎤 **Local ASR** — Alibaba DAMO FunASR (Paraformer) on GPU, industrial-grade Chinese recognition, 100% offline
-- ✨ **AI Polish** — DeepSeek removes filler words, detects self-corrections, auto-formats lists
-- 🌐 **Bilingual** — Auto-detects Chinese/English, tailored polishing for each
+- ✨ **AI Full Refinement** — 7-step polish: punctuation segmentation → typo fix → synonym optimization → filler removal → self-correction → logic restructuring → formatting
+- 🌐 **Bilingual** — Auto-detects Chinese/English, fixes homophone errors (在/再, their/there), custom filler word lists
+- 📋 **Long Speech Structuring** — Auto-extracts key points into numbered outlines (一/二/三 or 1/2/3)
 - 🧠 **Style Memory** — Saves history as few-shot examples, output style converges to your preference
 - 🔥 **Global Hotkey** — Hold Right Ctrl, speak, release, done — works in any app
 - 🖥️ **System Tray** — Runs quietly in background with status indicator
@@ -30,9 +31,10 @@ python3 -m typeless.main
 [Hold Hotkey] → [Record 16kHz] → [FunASR GPU ASR] → [DeepSeek Polish] → [Ctrl+V into app]
 ```
 
-- Chinese input: removes `嗯/啊/那个/然后` and 20+ filler words
-- English input: removes `um/uh/like/you know` and other disfluencies
+- Chinese: adds punctuation (。，、；：？！), fixes homophones (在/再, 的/得), optimizes synonyms, removes 20+ fillers, restructures logic
+- English: adds punctuation, fixes homophones (their/there), optimizes word choice, removes disfluencies, restructures flow
 - Auto-detects enumerations and reformats as markdown lists
+- Long speech → auto-extracts key points as numbered outline
 - Style memory persists across sessions for consistent output
 
 ## Tech Stack
@@ -40,7 +42,7 @@ python3 -m typeless.main
 | Module | Tech |
 |--------|------|
 | Speech Recognition | FunASR (Paraformer), RTF ~0.025, VRAM 0.8GB |
-| Text Polish | DeepSeek V4 Flash (OpenAI-compatible) |
+| Text Polish | DeepSeek V4 Flash | 7-step: punctuation → typos → synonyms → fillers → corrections → logic → format |
 | Audio Capture | PyAudio, 16kHz mono 16-bit PCM |
 | Hotkey | pynput (X11 global keyboard listener) |
 | Text Injection | xdotool (clipboard + Ctrl+V) |
