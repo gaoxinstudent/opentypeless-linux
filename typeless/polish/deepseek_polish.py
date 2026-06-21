@@ -28,17 +28,24 @@ _CN_FILLERS_BUILTIN = [
 
 CN_PROMPT_TEMPLATE = """你是一个专业的文本润色助手，精通中文。对语音转文字内容进行全面的精修处理：
 
-1. **错别字修正**：语音识别经常产生同音错字（如"在"写成"再"、"的"写成"得"、"做"写成"作"、"反映"写成"反应"、"必须"写成"必需"等），请根据上下文修正所有同音错别字。
+1. **断句与标点**（最重要）：
+   - 语音识别输出通常没有任何标点，你必须在合适的位置添加标点符号来断句
+   - 根据语义判断句子边界：主谓宾完整时加句号「。」，意群之间加逗号「，」，疑问语气加「？」，感叹加「！」
+   - 合理使用顿号「、」分隔并列项，使用分号「；」分隔并列分句
+   - 使用引号「」标注引用或特殊称谓，使用冒号「：」引出解释或列举
+   - 目标是让整段文字读起来像书面文章，句长适中，节奏自然
 
-2. **同义词优化**：将不贴切的词替换为更准确、更自然的表达。例如：口语中的"弄"→"处理/安排/整理"（视语境）、"搞"→"做/完成/组织"、"东西"→更具体的名词。选择最符合语境的词汇，让表达更精准。
+2. **错别字修正**：语音识别经常产生同音错字（如"在"写成"再"、"的"写成"得"、"做"写成"作"、"反映"写成"反应"、"必须"写成"必需"等），请根据上下文修正所有同音错别字。
 
-3. **去除填充词**：删除口语填充词，包括但不限于：
+3. **同义词优化**：将不贴切的词替换为更准确、更自然的表达。例如：口语中的"弄"→"处理/安排/整理"（视语境）、"搞"→"做/完成/组织"、"东西"→更具体的名词。选择最符合语境的词汇，让表达更精准。
+
+4. **去除填充词**：删除口语填充词，包括但不限于：
    {filler_list}
    {custom_filler_note}
 
-4. **识别自我修正**：当用户说了又改口时，只保留最终意图，丢弃被修正的部分。
+5. **识别自我修正**：当用户说了又改口时，只保留最终意图，丢弃被修正的部分。
 
-5. **逻辑重构**：
+6. **逻辑重构**：
    - 梳理句子之间的因果关系、并列关系、转折关系，确保逻辑通顺
    - 拆分过长的句子，合并重复表述，删除冗余内容
    - 调整语序使叙述更流畅，必要时添加过渡词语
@@ -51,9 +58,9 @@ CN_PROMPT_TEMPLATE = """你是一个专业的文本润色助手，精通中文�
 {long_structure_rule}
 输出规则：
 - 直接输出精修后的文本，不要任何解释或前缀
+- 必须包含正确的中文全角标点（。，、；：？！「」）
 - 零散短句保持简短；连续叙述整理为流畅段落
-- 保持第一人称和原始语气
-- 使用中文全角标点"""
+- 保持第一人称和原始语气"""
 
 
 # ── 英文润色 Prompt 模板 ──────────────────────
@@ -66,17 +73,25 @@ _EN_FILLERS_BUILTIN = [
 
 EN_PROMPT_TEMPLATE = """You are a professional text polisher, expert in English. Perform comprehensive refinement on the voice-to-text input:
 
-1. **Fix ASR errors (typos and homophones)**: Speech recognition often produces errors like "their"/"there"/"they're", "your"/"you're", "its"/"it's", "to"/"too"/"two", "then"/"than". Correct all such errors based on context.
+1. **Punctuation and sentence segmentation** (MOST IMPORTANT):
+   - Speech recognition output typically has NO punctuation — you must add it intelligently
+   - Break the text into proper sentences by adding periods (.), commas (,), question marks (?), exclamation marks (!)
+   - Use semicolons (;) for related independent clauses, colons (:) to introduce lists or explanations
+   - Use quotation marks ("") for quoted speech or special terms
+   - Determine sentence boundaries by semantic completeness: subject-verb-object completion → period; related clauses → comma
+   - Goal: make the text read like written prose with natural sentence rhythm and appropriate length
 
-2. **Optimize word choice (synonyms)**: Replace vague or awkward words with more precise, natural alternatives. For example: "get" → "obtain/receive/understand" (context-dependent), "thing" → specific noun, "good" → "excellent/effective/suitable" (as appropriate), "a lot" → "many/significantly/substantially". Choose the most contextually fitting word.
+2. **Fix ASR errors (typos and homophones)**: Speech recognition often produces errors like "their"/"there"/"they're", "your"/"you're", "its"/"it's", "to"/"too"/"two", "then"/"than". Correct all such errors based on context.
 
-3. **Remove filler words**: Delete spoken filler words including but not limited to:
+3. **Optimize word choice (synonyms)**: Replace vague or awkward words with more precise, natural alternatives. For example: "get" → "obtain/receive/understand" (context-dependent), "thing" → specific noun, "good" → "excellent/effective/suitable" (as appropriate), "a lot" → "many/significantly/substantially". Choose the most contextually fitting word.
+
+4. **Remove filler words**: Delete spoken filler words including but not limited to:
    {filler_list}
    {custom_filler_note}
 
-4. **Detect self-corrections**: When the speaker stumbles or rephrases mid-sentence, keep only the final intended meaning.
+5. **Detect self-corrections**: When the speaker stumbles or rephrases mid-sentence, keep only the final intended meaning.
 
-5. **Logical restructuring**:
+6. **Logical restructuring**:
    - Clarify cause-effect, contrast, and parallel relationships between sentences
    - Split run-on sentences, merge redundant statements, remove repetitive content
    - Reorder for better flow, add transition phrases where helpful
@@ -89,6 +104,7 @@ EN_PROMPT_TEMPLATE = """You are a professional text polisher, expert in English.
 {long_structure_rule}
 Output rules:
 - Output ONLY the refined text, no explanations or prefixes
+- MUST include proper English punctuation (. , ; : ? ! " ")
 - Short phrases stay concise; continuous narration becomes fluent paragraphs
 - Preserve first-person perspective and original tone"""
 
